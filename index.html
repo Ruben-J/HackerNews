@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A modern Hacker News reader with article previews and fast comment browsing.">
+    <title>Signalboard - Hacker News</title>
+    <link rel="preconnect" href="https://hacker-news.firebaseio.com">
+    <link rel="preconnect" href="https://api.microlink.io">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Signalboard home">
+          <span class="brand-mark">S</span>
+          <span>
+            <strong>Signalboard</strong>
+            <small>Hacker News, remixed</small>
+          </span>
+        </a>
+
+        <nav class="feed-tabs" aria-label="Story feeds">
+          <button class="tab-button active" type="button" data-feed="topstories">Top</button>
+          <button class="tab-button" type="button" data-feed="newstories">New</button>
+          <button class="tab-button" type="button" data-feed="beststories">Best</button>
+          <button class="tab-button" type="button" data-feed="askstories">Ask</button>
+          <button class="tab-button" type="button" data-feed="showstories">Show</button>
+        </nav>
+
+        <div class="search-wrap">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"></path>
+          </svg>
+          <input id="searchInput" type="search" placeholder="Filter stories" autocomplete="off">
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Live from news.ycombinator.com</p>
+            <h1>Readable tech news with the comment depth kept intact.</h1>
+            <p class="hero-text">Browse current HN stories, open the source article, and inspect discussions without losing your place.</p>
+          </div>
+
+          <div class="hero-stats" aria-live="polite">
+            <div>
+              <span id="storyCount">--</span>
+              <small>stories loaded</small>
+            </div>
+            <div>
+              <span id="commentCount">--</span>
+              <small>comments indexed</small>
+            </div>
+            <div>
+              <span id="lastUpdated">--</span>
+              <small>last refresh</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="main-column">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Visual brief</p>
+                <h2>Top links with images</h2>
+              </div>
+              <button id="refreshButton" class="icon-button" type="button" aria-label="Refresh stories" title="Refresh stories">
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="M21 12a9 9 0 0 1-15.1 6.6M3 12A9 9 0 0 1 18.1 5.4M21 4v6h-6M3 20v-6h6"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div id="spotlightGrid" class="spotlight-grid" aria-live="polite"></div>
+
+            <div class="section-heading feed-heading">
+              <div>
+                <p class="eyebrow">Front page</p>
+                <h2 id="feedTitle">Top stories</h2>
+              </div>
+              <label class="select-label">
+                <span>Sort</span>
+                <select id="sortSelect">
+                  <option value="rank">HN rank</option>
+                  <option value="score">Score</option>
+                  <option value="comments">Comments</option>
+                  <option value="time">Newest</option>
+                </select>
+              </label>
+            </div>
+
+            <div id="storyList" class="story-list" aria-live="polite"></div>
+          </div>
+
+          <aside class="side-panel" aria-label="Discussion highlights">
+            <div class="panel-section">
+              <p class="eyebrow">Discussion queue</p>
+              <h2>Comment-heavy stories</h2>
+              <div id="discussionList" class="discussion-list"></div>
+            </div>
+            <div class="panel-section source-panel">
+              <p class="eyebrow">Data source</p>
+              <p>This site reads public story and comment data from the official Hacker News Firebase API, then enriches the first five article links with detected preview images.</p>
+              <a href="https://github.com/HackerNews/API" target="_blank" rel="noreferrer">HN API docs</a>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
+    <aside id="commentDrawer" class="comment-drawer" aria-labelledby="drawerTitle" aria-modal="true" role="dialog" hidden>
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow">Thread</p>
+          <h2 id="drawerTitle">Comments</h2>
+          <p id="drawerMeta" class="drawer-meta"></p>
+        </div>
+        <button id="closeDrawer" class="icon-button" type="button" aria-label="Close comments" title="Close comments">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M18 6 6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="drawerActions" class="drawer-actions"></div>
+      <div id="commentsRoot" class="comments-root"></div>
+    </aside>
+
+    <template id="skeletonTemplate">
+      <article class="story-card skeleton">
+        <div class="skeleton-line wide"></div>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
+      </article>
+    </template>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
