@@ -188,7 +188,7 @@ function setLoading() {
   for (let index = 0; index < 8; index += 1) {
     els.storyList.append(els.skeletonTemplate.content.cloneNode(true));
   }
-  els.discussionList.innerHTML = '<div class="loading-state">Loading discussions...</div>';
+  els.discussionList.innerHTML = '<div class="loading-state">Finding the loud threads…</div>';
 }
 
 async function loadFeed(feed = state.feed) {
@@ -207,7 +207,7 @@ async function loadFeed(feed = state.feed) {
     updateStats();
     enrichSpotlightImages();
   } catch (error) {
-    els.storyList.innerHTML = `<div class="empty-state">HN could not be reached. Try refreshing in a moment.</div>`;
+    els.storyList.innerHTML = `<div class="empty-state">Couldn't reach Hacker News right now — hit refresh in a sec.</div>`;
     els.spotlightGrid.innerHTML = "";
     els.discussionList.innerHTML = "";
     console.error(error);
@@ -256,7 +256,7 @@ function renderSpotlight() {
   const stories = state.visibleStories.slice(0, IMAGE_ENRICH_LIMIT);
   els.spotlightGrid.innerHTML = "";
   if (!stories.length) {
-    els.spotlightGrid.innerHTML = `<div class="empty-state">No stories match this filter.</div>`;
+    els.spotlightGrid.innerHTML = `<div class="empty-state">Nothing matches that filter.</div>`;
     return;
   }
 
@@ -287,7 +287,7 @@ function renderSpotlight() {
 function renderStories() {
   els.storyList.innerHTML = "";
   if (!state.visibleStories.length) {
-    els.storyList.innerHTML = `<div class="empty-state">No stories match this filter.</div>`;
+    els.storyList.innerHTML = `<div class="empty-state">Nothing matches that filter.</div>`;
     return;
   }
 
@@ -356,13 +356,13 @@ async function openComments(storyId) {
     <a class="text-button primary" href="${articleUrl(story)}" target="_blank" rel="noreferrer">Open article</a>
     <a class="text-button" href="${hnUrl(story)}" target="_blank" rel="noreferrer">Open on HN</a>
   `;
-  els.commentsRoot.innerHTML = '<div class="loading-state">Loading top comments...</div>';
+  els.commentsRoot.innerHTML = '<div class="loading-state">Pulling the thread…</div>';
   await renderComments(story);
 }
 
 async function renderComments(story) {
   if (!story.kids?.length) {
-    els.commentsRoot.innerHTML = '<div class="empty-state">This story has no comments yet.</div>';
+    els.commentsRoot.innerHTML = '<div class="empty-state">No comments on this one yet. Be the first over on HN.</div>';
     return;
   }
 

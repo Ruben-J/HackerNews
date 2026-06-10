@@ -3,20 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="A modern Hacker News reader with article previews and fast comment browsing.">
-    <title>Signalboard - Hacker News</title>
+    <meta name="description" content="Signalboard — the front page of tech, rebuilt. Real-time Hacker News with full threads, source articles, and zero clutter.">
+    <title>Signalboard — Hacker News, rebuilt</title>
     <link rel="preconnect" href="https://hacker-news.firebaseio.com">
     <link rel="preconnect" href="https://api.microlink.io">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
+    <div class="grain" aria-hidden="true"></div>
     <div class="app-shell">
-      <header class="topbar">
+      <header class="topbar" data-screen-label="Header">
         <a class="brand" href="./" aria-label="Signalboard home">
-          <span class="brand-mark">S</span>
-          <span>
+          <span class="brand-mark" aria-hidden="true">
+            <span class="brand-pulse"></span>
+          </span>
+          <span class="brand-text">
             <strong>Signalboard</strong>
-            <small>Hacker News, remixed</small>
+            <small>Hacker News, rebuilt</small>
           </span>
         </a>
 
@@ -32,40 +38,43 @@
           <svg aria-hidden="true" viewBox="0 0 24 24">
             <path d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"></path>
           </svg>
-          <input id="searchInput" type="search" placeholder="Filter stories" autocomplete="off">
+          <input id="searchInput" type="search" placeholder="Filter the feed" autocomplete="off">
+          <kbd>/</kbd>
         </div>
       </header>
 
       <main>
-        <section class="hero">
+        <section class="hero" data-screen-label="Hero">
           <div class="hero-copy">
-            <p class="eyebrow">Live from news.ycombinator.com</p>
-            <h1>Readable tech news with the comment depth kept intact.</h1>
-            <p class="hero-text">Browse current HN stories, open the source article, and inspect discussions without losing your place.</p>
+            <p class="eyebrow live"><span class="dot"></span>Live from news.ycombinator.com</p>
+            <h1>Tech news, <em>done right.</em></h1>
           </div>
 
           <div class="hero-stats" aria-live="polite">
             <div>
               <span id="storyCount">--</span>
-              <small>stories loaded</small>
+              <small>Stories live</small>
             </div>
             <div>
               <span id="commentCount">--</span>
-              <small>comments indexed</small>
+              <small>Comments indexed</small>
             </div>
             <div>
               <span id="lastUpdated">--</span>
-              <small>last refresh</small>
+              <small>Last sync</small>
             </div>
           </div>
         </section>
 
-        <section class="content-grid">
-          <div class="main-column">
+        <section class="content-grid" id="feed">
+          <div class="main-column" data-screen-label="Feed">
             <div class="section-heading">
-              <div>
-                <p class="eyebrow">Visual brief</p>
-                <h2>Top links with images</h2>
+              <div class="section-label">
+                <span class="index">01</span>
+                <div>
+                  <p class="eyebrow">Spotlight</p>
+                  <h2>The links worth the click</h2>
+                </div>
               </div>
               <button id="refreshButton" class="icon-button" type="button" aria-label="Refresh stories" title="Refresh stories">
                 <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -77,9 +86,12 @@
             <div id="spotlightGrid" class="spotlight-grid" aria-live="polite"></div>
 
             <div class="section-heading feed-heading">
-              <div>
-                <p class="eyebrow">Front page</p>
-                <h2 id="feedTitle">Top stories</h2>
+              <div class="section-label">
+                <span class="index">02</span>
+                <div>
+                  <p class="eyebrow">Front page</p>
+                  <h2 id="feedTitle">Top stories</h2>
+                </div>
               </div>
               <label class="select-label">
                 <span>Sort</span>
@@ -95,20 +107,30 @@
             <div id="storyList" class="story-list" aria-live="polite"></div>
           </div>
 
-          <aside class="side-panel" aria-label="Discussion highlights">
-            <div class="panel-section">
-              <p class="eyebrow">Discussion queue</p>
-              <h2>Comment-heavy stories</h2>
+          <aside class="side-panel" aria-label="Discussion highlights" data-screen-label="Sidebar">
+            <div class="panel-section hot-panel">
+              <div class="section-label">
+                <span class="index">03</span>
+                <div>
+                  <p class="eyebrow">Hot threads</p>
+                  <h2>Where the argument is</h2>
+                </div>
+              </div>
               <div id="discussionList" class="discussion-list"></div>
             </div>
             <div class="panel-section source-panel">
-              <p class="eyebrow">Data source</p>
-              <p>This site reads public story and comment data from the official Hacker News Firebase API, then enriches the first five article links with detected preview images.</p>
-              <a href="https://github.com/HackerNews/API" target="_blank" rel="noreferrer">HN API docs</a>
+              <p class="eyebrow">Under the hood</p>
+              <p>Every story and comment comes straight from the official Hacker News API — no middleman, no algorithm. The top five links get auto-fetched preview images.</p>
+              <a class="source-link" href="https://github.com/HackerNews/API" target="_blank" rel="noreferrer">Read the API docs<span aria-hidden="true">↗</span></a>
             </div>
           </aside>
         </section>
       </main>
+
+      <footer class="site-footer">
+        <span><strong>Signalboard</strong> — Hacker News, rebuilt for people who actually read.</span>
+        <span class="footer-meta">Data: <a href="https://github.com/HackerNews/API" target="_blank" rel="noreferrer">HN Firebase API</a></span>
+      </footer>
     </div>
 
     <div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
